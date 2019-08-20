@@ -35,35 +35,35 @@ end
 
 Data.ModelFitOptions = [1, 2,3, 4];
 
-%%% I am confused about this line below. It seem to pick the model to use to
-%%% simulate the data completely randomly. Is that what you intended?
-Data.ModelFit = Data.ModelFitOptions(randi([1 4]));
+Data.ModelFit = Data.ModelFitOptions(1);
 %set two model types, 0 is Bayes, 1 is Alt. 
 display(Data.ModelFit)
+
+for iTrial = 1:Data.nTrials
 if Data.ModelFit == 1
-    if Data.BlockType == 1
-        Data.ModelType = 1; %alternative for 2 gabors
+    if Data.BlockType(iTrial,1) == 1
+        Data.ModelType(iTrial,1) = 1; %alternative for 2 gabors
     else
-        Data.ModelType = 0; %normative for 1 gabor
+        Data.ModelType(iTrial,1) = 0; %normative for 1 gabor
     end
     
 elseif Data.ModelFit == 2
-    Data.ModelType = 0; %always normative
+    Data.ModelType(iTrial,1) = 0; %always normative
     
 elseif Data.ModelFit == 3
-     if Data.BlockType == 1
-        Data.ModelType = 0; %normative for 2 gabors
+     if Data.BlockType(iTrial,1) == 1
+        Data.ModelType(iTrial,1) = 0; %normative for 2 gabors
     else
-        Data.ModelType = 1; %alternative for one
+        Data.ModelType(iTrial,1) = 1; %alternative for one
      end
      
 elseif Data.ModelFit == 4
-    Data.ModelType = 1; %always alternative 
+    Data.ModelType(iTrial,1) = 1; %always alternative 
     
 end
+end
 
-
-%label four potential model fits withing data struct
+%label four potential model fits within data struct
 if Data.ModelFit ==1
  Data.model  = 'normativeGenerative'; %easy being Rule, hard being BAyes
 elseif Data.ModelFit == 2

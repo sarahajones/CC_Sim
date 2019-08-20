@@ -7,7 +7,7 @@ end
 
  DataSet.Spec.Mu = (1/16).*pi;
  DataSet.Spec.binNum = 10;
-save([pwd '/DataStruct']);
+save([pwd '/DataStructModel1']);
 % 
 % [X,Y] = (DataSet.Data.Percept, DataSet.Data.Contrast);
 % [Z] = DataSet.Data.Confidence
