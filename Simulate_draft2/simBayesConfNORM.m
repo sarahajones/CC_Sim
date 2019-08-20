@@ -35,6 +35,8 @@ end
 
 Data.ModelFitOptions = [1, 2,3, 4];
 
+%%% I am confused about this line below. It seem to pick the model to use to
+%%% simulate the data completely randomly. Is that what you intended?
 Data.ModelFit = Data.ModelFitOptions(randi([1 4]));
 %set two model types, 0 is Bayes, 1 is Alt. 
 display(Data.ModelFit)
