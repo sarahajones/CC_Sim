@@ -13,8 +13,9 @@ if kappa < 1e-6
     
     samples = samples - pi;
     
-    
+    if ~shape == 1
     samples = reshape(samples, shape);
+    end
     
     
 end

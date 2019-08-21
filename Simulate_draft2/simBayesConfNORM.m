@@ -1,28 +1,30 @@
-function Data = simBayesConfNORM
+function Data = simBayesConfNORM(modelNum)
 %% PARAMETER INPUTS 
 
 Data.nTrials = 10000; % number of trials simulated
 %properties for circle statistics 
-mu_cat1 = (1/16).*(pi);
-mu_cat2 = (-1/16).*(pi);
+mu_cat1 = (-1/16).*(pi);
+mu_cat2 = (1/16).*(pi);
 
 kappa_s = 7;%%kappa (concentration parameter, needs to be convereted for derivations to sigma)
 Data.KappaS = kappa_s;
-sigma_s = sqrt(1/7);
+sigma_s = sqrt(1/kappa_s);
 prior = 0.5; %assume neutral prior for symmetry of decisions
 contrasts = [0.1, 0.2, 0.3, 0.4, 0.8]; %external noise
-sigma_X = [1, 1.25, 1.5, 1.75, 2;
-            1.1, 1.35, 1.6, 1.85, 2.1];
+sigma_X = [0.5, 1, 1.5, 1.75, 5;
+    0.5, 1, 1.5, 1.75, 5]/5;
+Data.SigmaX_array = sigma_X';
+        
     
 %% DATA STRUCTURE
 %create dataStruct with stimulus properties and trial info
 
 %split an ABBA pattern, here A is 1 Gabor, and   
 for iTrial = 1:Data.nTrials
-    if iTrial < 2500
+    if iTrial < (Data.nTrials/4)
         Data.BlockType(iTrial, 1) = 0;
         Data.numGabors(iTrial, 1)= 1;
-    elseif iTrial > 7500 
+    elseif iTrial > ((3*Data.nTrials)/4)
         Data.BlockType(iTrial, 1) = 0;
         Data.numGabors(iTrial, 1) = 1;
     else
@@ -35,26 +37,26 @@ end
 
 Data.ModelFitOptions = [1, 2,3, 4];
 
-Data.ModelFit = Data.ModelFitOptions(1);
+Data.ModelFit = Data.ModelFitOptions(modelNum);
 %set two model types, 0 is Bayes, 1 is Alt. 
 display(Data.ModelFit)
 
 for iTrial = 1:Data.nTrials
 if Data.ModelFit == 1
-    if Data.BlockType(iTrial,1) == 1
-        Data.ModelType(iTrial,1) = 1; %alternative for 2 gabors
+    if Data.numGabors(iTrial,1) == 2
+        Data.ModelType(iTrial,1) = 0; %normative for 2 gabors
     else
-        Data.ModelType(iTrial,1) = 0; %normative for 1 gabor
+        Data.ModelType(iTrial,1) = 1; %alternative for 1 gabor
     end
     
 elseif Data.ModelFit == 2
     Data.ModelType(iTrial,1) = 0; %always normative
     
 elseif Data.ModelFit == 3
-     if Data.BlockType(iTrial,1) == 1
-        Data.ModelType(iTrial,1) = 0; %normative for 2 gabors
+     if Data.numGabors(iTrial,1) == 2
+        Data.ModelType(iTrial,1) = 1; %alternative for 2 gabors
     else
-        Data.ModelType(iTrial,1) = 1; %alternative for one
+        Data.ModelType(iTrial,1) = 0; %normative for one
      end
      
 elseif Data.ModelFit == 4
@@ -109,7 +111,9 @@ end
 
 % If any percepts are outside the range [-pi pi] then move them back in (any
 % grating angle can be mapped into this range)
-Data.Percept = vS_mapBackInRange(Data.Percept, -pi, pi);
+% Data.Percept = vS_mapBackInRange(Data.Percept, -pi, pi);
+% Joshua: Commenting out. We should just avoid using regions outside -pi and pi
+% because we are using the Gaussian model, rather than mapping back in range.
 
 % check on percepts
 %figure
@@ -134,7 +138,7 @@ for i = 1:Data.nTrials
 end  
 
 % check on decision accuracy
-sum(Data.Correct, 'all')
+% sum(Data.Correct, 'all')
 
 %% CONFIDENCE
 %calculate confidence value for each trail based on model type and decision
@@ -157,5 +161,8 @@ Data.pDivisions = 0 : Data. quantileSize : 1;
 breaks = quantile(Data.Confidence, Data.pDivisions);
 Data.binnedConfidence = discretize(Data.Confidence, breaks);
 
+Data.breaks = breaks;
+Data.breaks(1) = [];
+Data.breaks(end) = [];
     
 end

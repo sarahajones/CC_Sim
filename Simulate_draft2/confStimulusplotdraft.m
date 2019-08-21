@@ -1,3 +1,4 @@
+function confStimulusplotdraft(DataSet)
 
 XVars.ProduceVar = @(Data) Data.Orientation;
 XVars.NumBins = 10;

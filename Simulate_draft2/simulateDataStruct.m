@@ -1,8 +1,8 @@
- function DataSet = simulateDataStruct
+ function DataSet = simulateDataStruct(modelNum)
 % ParticipantNumber = {1:10};
 
 for iP = 1:14
-    DataSet.P(iP).Data= simBayesConfNORM; 
+    DataSet.P(iP).Data= simBayesConfNORM(modelNum); 
 end
 
  DataSet.Spec.Mu = (1/16).*pi;
