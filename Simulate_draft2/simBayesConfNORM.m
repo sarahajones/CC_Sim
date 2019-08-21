@@ -161,6 +161,11 @@ Data.pDivisions = 0 : Data. quantileSize : 1;
 breaks = quantile(Data.Confidence, Data.pDivisions);
 Data.binnedConfidence = discretize(Data.Confidence, breaks);
 
+% Check
+if any(diff(breaks) == 0)
+    error('Too many confidence reports fall into the same bin.')
+end
+
 Data.breaks = breaks;
 Data.breaks(1) = [];
 Data.breaks(end) = [];
